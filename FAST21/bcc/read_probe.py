@@ -17,7 +17,7 @@ program="""
 		task = (struct task_struct *)bpf_get_current_task();
 
 		char comm_string[TASK_COMM_LEN];
-		bpf_probe_read(&comm_string,TASK_COMM_LEN,(const void *) task->comm);
+		bpf_probe_read_kernel(&comm_string,TASK_COMM_LEN,(const void *) task->comm);
 
 		struct fs_struct *cur_fs;
 		cur_fs=(struct fs_struct *)task->fs;
@@ -29,7 +29,7 @@ program="""
 		dentry_mnt=cur_pwd.dentry;
 
 		struct qstr file_name_struct;
-		bpf_probe_read(&file_name_struct,sizeof(struct qstr),(const void *) &dentry_mnt->d_name);
+		bpf_probe_read_kernel(&file_name_struct,sizeof(struct qstr),(const void *) &dentry_mnt->d_name);
 
 		//bpf_trace_printk("ROOT MOUNT: %s\\n", file_name_struct.name);
 		bpf_trace_printk("%s\\n", comm_string);
